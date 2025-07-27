@@ -1,11 +1,9 @@
-import Header from "./Header"
-import NewNote from "./NewNote"
+import NoteList from "./NoteList"
 
 const Home = () => {
   return (
     <div>
-        <Header/>
-        <NewNote/>
+        <NoteList/>
     </div>
   )
 }

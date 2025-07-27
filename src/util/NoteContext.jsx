@@ -1,28 +1,56 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
-export const store=createContext();
+export const store = createContext();
 
-export const NoteProvider=({children})=>{
-    const [frmData,setFrmData]=useState({});
+export const NoteProvider = ({ children }) => {
+  const [data, setData] = useState([]);
+  const [frmData, setFrmData] = useState({ title: "", note: "" });
 
-    const handleInput=(e)=>{
-            const {name,value}=e.target;
-            setFrmData({...frmData,[name]: value});
-    }
-    const handleSubmit=(e)=>{
-        e.preventDefault();
-       const exist= JSON.parse(localStorage.getItem("notes"))||[];
-       let count=exist.length==0?1:exist.length+1;
-       const data=[...exist,{id:count,...frmData}];
-       localStorage.setItem("notes",JSON.stringify(data));
-       setFrmData({});
-    }
-    const handleDelete=()=>{
+  useEffect(() => {
+    const notes = JSON.parse(localStorage.getItem("notes")) || [];
+    setData(notes);
+  }, []);
 
-    }
-    return(
-        <store.Provider value={{handleInput,handleSubmit,handleDelete}}>
-            {children}
-        </store.Provider>
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(data));
+  }, [data]);
+
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setFrmData({ ...frmData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newNote = { id: Date.now(), ...frmData, pinned: false };
+    setData((prev) => [...prev, newNote]);
+    setFrmData({ title: "", note: "" });
+  };
+
+  const handleDelete = (id) => {
+    setData((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handlePin = (id) => {
+    setData((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, pinned: !item.pinned } : item
+      )
     );
-}
+  };
+
+  return (
+    <store.Provider
+      value={{
+        frmData,
+        data,
+        handleInput,
+        handleSubmit,
+        handleDelete,
+        handlePin,
+      }}
+    >
+      {children}
+    </store.Provider>
+  );
+};
