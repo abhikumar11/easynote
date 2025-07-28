@@ -1,52 +1,44 @@
-import React, { useContext } from 'react'
-import { store } from '../util/NoteContext'
+import { useContext } from "react";
+import { store } from "../util/NoteContext";
 
 const NewNote = () => {
-  const { handleInput, handleSubmit, frmData } = useContext(store);
+  const { frmData, handleInput, handleSubmit, editId } = useContext(store);
+
   return (
-   <div className="max-w-md mx-auto mt-10 bg-white shadow-xl rounded-2xl p-6">
-  <h2 className="text-2xl font-semibold mb-4 text-gray-800">Create New Note</h2>
-  <form onSubmit={handleSubmit} className="space-y-4">
-    <div>
-      <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-      <input
-        id="title"
-        type="text"
-        name="title"
-        value={frmData.title}
-        onChange={handleInput}
-        placeholder="Enter title"
-        required
-        className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+    <div className="max-w-xl mx-auto mt-10">
+      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+        {editId ? "Edit Note" : "Add New Note"}
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl shadow-lg space-y-4"
+      >
+        <input
+          name="title"
+          value={frmData.title}
+          onChange={handleInput}
+          placeholder="Note Title"
+          className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+        <textarea
+          name="note"
+          value={frmData.note}
+          onChange={handleInput}
+          placeholder="Write your note here..."
+          className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          rows="5"
+          required
+        />
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition hover:cursor-pointer"
+        >
+          {editId ? "Update Note" : "Save Note"}
+        </button>
+      </form>
     </div>
+  );
+};
 
-    <div>
-      <label htmlFor="note" className="block text-sm font-medium text-gray-700">Note</label>
-      <textarea
-        id="note"
-        name="note"
-        value={frmData.note}
-        rows={4}
-        onChange={handleInput}
-        placeholder="Write your note here..."
-        required
-        className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-      />
-    </div>
-
-    <div>
-      <input
-        type="submit"
-        value="Save"
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
-      />
-    </div>
-  </form>
-</div>
-
-
-  )
-}
-
-export default NewNote
+export default NewNote;
